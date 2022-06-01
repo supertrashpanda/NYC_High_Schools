@@ -1,0 +1,13 @@
+name: track_user
+title:
+username:
+account: supertrashpanda
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6393164
+bundleId: 5969168
+url: https://supertrashpanda.shinyapps.io/track_user/
+when: 1654116012.66807
+lastSyncTime: 1654116012.66808
+asMultiple: FALSE
+asStatic: FALSE

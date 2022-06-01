@@ -1,0 +1,22 @@
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-230088806-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+
+  
+
+
+  $(document).on('click', 'button#login', function(e) {
+     gtag('event', 'action', {'event_category' : 'submit username',
+    'event_label' : document.querySelector('input#userName').value
+    });
+  });
+
+
+
+
+  gtag('config', 'UA-230088806-1');
+</script>

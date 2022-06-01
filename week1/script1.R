@@ -39,7 +39,6 @@ to_check[,3:16]%>%
   summarise_all(funs(sum(is.na(.))))
 df2[which((df2$dbn=="17K531")&(df2$program=="program1")),4:16]=df2[which((df2$dbn=="17K531")&(df2$program=="program2")),4:16]#to address the only anomaly 
 df2<-df2[!is.na(df2$program_name),]
-write_csv(df2,"/Users/lingyunfan/all_repos/nyc_highschools/NYC_High_Schools/data/restructured.csv")
 
 schools<-df2%>%group_by(dbn)%>%summarise(n_prgm=n())
 schools<-schools%>%left_join(df[,variables],by="dbn")
@@ -74,11 +73,13 @@ ggmap(map_nyc,extent="normal",maprange=FALSE) +
             ylim=c(attr(map_nyc, "bb")$ll.lat+0.05,
                    attr(map_nyc, "bb")$ur.lat-0.05)) 
 
+write_csv(schools,"/Users/lingyunfan/all_repos/nyc_highschools/NYC_High_Schools/data/schools.csv")
 
 
 
 library(leaflet)
 library(RColorBrewer)
+library(leaflet.extras)
 pal = colorFactor("Set1", domain = schools$school_accessibility_description)
 color_offsel1 = pal(schools$school_accessibility_description)
 content <- paste("School:",schools$school_name,"<br/>",
@@ -154,6 +155,7 @@ df2$top_priority=ifelse(df2$admissionspriority1=="Priority to Brooklyn students 
 df2$top_priority=ifelse(df2$admissionspriority1=="Priority to Manhattan students or residents","to Manhattan residents",df2$top_priority)
 df2$top_priority=ifelse(df2$admissionspriority1=="Priority to Queens students or residents","to Queens residents",df2$top_priority)
 df2$top_priority=ifelse(df2$admissionspriority1=="Priority to Staten Island students or residents","to Staten Island residents",df2$top_priority)
+df2$top_priority=ifelse(is.na(df2$top_priority),"No Priority",df2$top_priority)
 view(table(df2$top_priority))
 
 
@@ -161,5 +163,63 @@ view(table(df2$top_priority))
 
 view(table(df2$addtl_info))
 view(table(df2$eligibility))
+view(table(df2$diadetails))
+
+df<-df%>%mutate(prgm_set= mapply(c,program1,program2,program3,
+                                 program4,program5,program6,
+                                 program7,program8,program9,
+                                 program10,program11,program12,SIMPLIFY = F))
+schools<-schools%>%arrange(dbn)
+df<-df%>%arrange(dbn)
+schools$prgm_set<-df$prgm_set
+schools$prgm_set<-lapply(schools$prgm_set,function(x) paste(x, collapse=', ' ))
+schools$prgm_set<-lapply(schools$prgm_set,unlist)
+to_check<-unnest(schools, prgm_set)
+to_check$prgm_set<-gsub(" ,", ",", to_check$prgm_set, fixed=TRUE)
+to_check$prgm_set<-trimws(to_check$prgm_set)
+to_check$prgm_set<-sub('[[:punct:]]+$', '', to_check$prgm_set)
 
 
+
+write_csv(to_check,"/Users/lingyunfan/all_repos/nyc_highschools/NYC_High_Schools/data/schools.csv")
+
+
+df2$ge_per_seat<-as.numeric(df2$grade9geapplicantsperseat)
+max(df2$ge_per_seat,na.rm = TRUE)
+
+
+
+write_csv(df2[,-30],"/Users/lingyunfan/all_repos/nyc_highschools/NYC_High_Schools/data/restructured.csv")
+
+
+
+table(df2$school_accessibility_description)
+
+
+
+
+df2<-read.csv("/Users/lingyunfan/all_repos/nyc_highschools/NYC_High_Schools/data/restructured_programs.csv")
+schools<-read.csv("/Users/lingyunfan/all_repos/nyc_highschools/NYC_High_Schools/data/schools.csv")
+view(table(df2$diadetails))
+
+lis<-list(data=df,st="FDf")
+class(lis$data)
+view(table(df2$eligibility,useNA="always"))
+?table
+
+schools<-schools%>%group_by(long,lat)%>%mutate(counter = row_number(dbn)-1)
+subs<-schools[,c("lat","long","dbn","counter")]
+subs$lat=subs$lat+0.0001*subs$counter
+subs$long=subs$long+0.0001*subs$counter
+
+
+df2<-df2[,-33]
+df2<-df2[,-34]
+df2<-df2%>%left_join(subs,by="dbn")
+
+
+
+
+write_csv(df2,"/Users/lingyunfan/all_repos/nyc_highschools/NYC_High_Schools/data/restructured_programs.csv")
+df2<-read.csv("/Users/lingyunfan/all_repos/nyc_highschools/NYC_High_Schools/data/restructured_programs.csv")
+#many schools lack ge_per_seat info, so their points are not shown on the map
