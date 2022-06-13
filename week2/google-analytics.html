@@ -15,6 +15,12 @@
     });
   });
 
+  $(document).on('change', 'select#grade', function(e) {
+     gtag('event', 'change', {'event_category' : 'grade in sep 2022',
+    'event_label' : document.querySelector('select#grade').value
+    });
+  });
+
 
 
 

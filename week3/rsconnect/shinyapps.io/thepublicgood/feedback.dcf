@@ -1,0 +1,13 @@
+name: feedback
+title:
+username:
+account: thepublicgood
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6468027
+bundleId: 5999138
+url: https://thepublicgood.shinyapps.io/feedback/
+when: 1654967656.1949
+lastSyncTime: 1654967656.19491
+asMultiple: FALSE
+asStatic: FALSE

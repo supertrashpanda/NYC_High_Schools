@@ -1,0 +1,26 @@
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-230088806-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+
+
+  $(document).on('click', 'button#submit', function(e) {
+     gtag('event', 'action', {'event_category' : 'submit feedback',
+    'event_label' : document.querySelector('input#response').value
+    });
+  });
+
+  $(document).on('change', 'input#response', function(e) {
+     gtag('event', 'action', {'event_category' : 'input feedback',
+    'event_label' : document.querySelector('input#response').value
+    });
+  });
+
+
+
+  gtag('config', 'UA-230088806-2');
+</script>
+
